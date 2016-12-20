@@ -1,0 +1,15 @@
+alphabet = [str(i) for i in range(10)]
+A = input()
+n = 10
+k = 36
+for i in range(65,91):
+    alphabet.append(chr(i))
+A = int(A, int(n))
+res = []
+while A > int(k):
+    res.append(alphabet[A%int(k)])
+    A //= int(k)
+res.append(alphabet[A%int(k)])
+res.append(alphabet[A//int(k)])
+res = res[::-1]
+print(res.count("X"))

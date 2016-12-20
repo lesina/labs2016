@@ -1,0 +1,16 @@
+Vitya = list(map(int, input().split()))
+Misha = list(map(int, input().split()))
+i = 0
+n = len(Vitya)-1
+for j in range(n-1):
+    if Vitya[i] <= max(Vitya[i+1:]):
+        index = i
+        MAX = Vitya[i+1]
+        for k in range(i+1, n+1):
+            if Vitya[k] >= MAX:
+                index = k
+                MAX = Vitya[k]
+        Vitya[i], Vitya[index] = Vitya[index], Vitya[i]
+        Misha[i], Misha[index] = Misha[index], Misha[i]
+    i += 1
+print(*Misha)

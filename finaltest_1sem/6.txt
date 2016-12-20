@@ -1,0 +1,15 @@
+books = list(map(int, input().split()))
+answer = dict()
+for book in books:
+    answer[book] = 0
+for i in range(len(books)-1):
+    for j in range(len(books)-1):
+        if books[j] > books[j+1]:
+            books[j], books[j+1] = books[j+1], books[j]
+            answer[books[j]] += 1
+            answer[books[j+1]] += 1
+keys = sorted(answer)
+res = []
+for i in keys:
+    res.append(str(i)+":"+str(answer[i]))
+print(*res)
