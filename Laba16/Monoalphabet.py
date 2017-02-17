@@ -7,8 +7,8 @@ __author__ = 'Aleksei Lesovoi'
 
 class Monoalphabet:
     alphabet = "оеаинтсрвлкмдпуяыьгзбчйхжшюцщэфъё"
-    key      = "цщэгюбшжоячсматизхрйьлывнефёукпъд"
-    #key     = "цщэгюбшжоячс.а.изхр...ы.неф...п.."
+    key      = "цщэгюбшжоячсматизхрйьлывнефёъкпуд"
+    #key     = "цщэгюбшжоячс.а.изхр...ы.неф.ъ.п.."
 
     def __init__(self, keytable):
         lowercase_code = {x: y for x, y in zip(self.alphabet, keytable)}
@@ -20,6 +20,7 @@ class Monoalphabet:
         uppercase_code2 = {x.upper(): y.upper() for y, x in zip(self.alphabet, self.key)}
         self._normDecode = dict(lowercase_code2)
         self._normDecode.update(uppercase_code2)
+        self._normEncode = {self._normDecode[x]: x for x in self._normDecode}
 
     def encode(self, text):
         return ''.join([self._encode.get(char, char) for char in text])
@@ -29,6 +30,9 @@ class Monoalphabet:
 
     def normDecode(self, text):
         return ''.join([self._normDecode.get(char, char) for char in text])
+
+    def normEncode(self, text):
+        return ''.join([self._normEncode.get(char, char) for char in text])
 
 
 def keyTable(text):
@@ -43,4 +47,5 @@ def keyTable(text):
 key = Monoalphabet.alphabet[:]
 line = input()
 cipher = Monoalphabet(keyTable(line))
-print(cipher.normDecode(line))
+print(cipher.encode(line))
+print(keyTable(line))
