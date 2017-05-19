@@ -56,15 +56,34 @@ P.S. Даже не пытайся понять, что тут написано, 
 
 """
 
-def trololo(Graph, Begin, Current, Path = [], Paths = []):
-    Path.append(Current)
-    for ihavenoideahowtonamethisshit in Graph[Current]:
-        if ihavenoideahowtonamethisshit == Begin and len(Path) > 2:
-            Paths.append(list(Path))
-        if ihavenoideahowtonamethisshit not in Path:
-            Paths = trololo(Graph, Begin, ihavenoideahowtonamethisshit, Path, Paths)
-    Path.pop()
+
+def bfs(Graph, start=0, Path=[], Paths=[]):
+    D = [None] * size
+    D[start] = 0
+    Q = [start]
+    Qstart = 0
+    while Qstart < len(Q):
+        u = Q[Qstart]
+        Path.append(u)
+        Qstart += 1
+        for v in Graph[u]:
+            if D[v] is None:
+                D[v] = D[u] + 1
+                Q.append(v)
+            if v == start and len(Path) > 2:
+                Paths.append(list(Path))
+        Path.pop()
     return Paths
+#
+# def trololo(Graph, Begin, Current, Path = [], Paths = []):
+#     Path.append(Current)
+#     for ihavenoideahowtonamethisshit in Graph[Current]:
+#         if ihavenoideahowtonamethisshit == Begin and len(Path) > 2:
+#             Paths.append(list(Path))
+#         if ihavenoideahowtonamethisshit not in Path:
+#             Paths = trololo(Graph, Begin, ihavenoideahowtonamethisshit, Path, Paths)
+#     Path.pop()
+#     return Paths
 
 
 def makeGraph(size, n):
@@ -81,8 +100,9 @@ size, n = list(map(int, input().split()))
 lil = makeGraph(size, n)
 cycles = []
 for i in range(size):
-    for j in trololo(lil, i, i):
+    for j in bfs(lil, i):
         cycles.append(j)
+print(cycles)
 if cycles:
     min_len = min(list(map(len, cycles)))
     for cycle in cycles:

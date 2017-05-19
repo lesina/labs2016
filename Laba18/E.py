@@ -1,111 +1,69 @@
-def makeGraph(size, n):
-    adjacency_list = []
-    GOVNOKOD = []
-    for i in range(size):
-        adjacency_list.append([])
-        GOVNOKOD.append([])
-    for i in range(n):
-        num, vertex = list(map(int, input().split()))
-        adjacency_list[num].append(vertex)
-        GOVNOKOD[num].append(vertex)
-        GOVNOKOD[vertex].append(num)
-    return adjacency_list, GOVNOKOD
-
-
-def makeGraph2(size, n, pairs):
-    adjacency_list = []
-    for i in range(size):
-        adjacency_list.append([])
-    for i in pairs:
-        num, vertex = i[0], i[1]
-        adjacency_list[num].append(vertex)
-    return adjacency_list
-
-
-def dfs(vertex):
-    visitedEdges[vertex] = True
-    for i in adjacency_list[vertex]:
-        if not visitedEdges[i]:
-#            if ((vertex + 1), i) not in DFS and (i, (vertex + 1)) not in DFS:
-#                DFS.append((vertex + 1, i))
-            dfs(i)
-
-
-def dfs2(vertex):
-    visitedEdges[vertex] = True
-    for i in NOG_adjacency_list[vertex]:
-        if not visitedEdges[i]:
-#            if ((vertex + 1), i) not in DFS and (i, (vertex + 1)) not in DFS:
-#                DFS.append((vertex + 1, i))
-            dfs2(i)
-
-
-def dfs3(vertex):
-    visitedEdges[vertex] = True
-    for i in GOVNOKOD[vertex]:
-        if not visitedEdges[i]:
-#            if ((vertex + 1), i) not in DFS and (i, (vertex + 1)) not in DFS:
-#                DFS.append((vertex + 1, i))
-            dfs3(i)
-
-
-def bfs2(vertex):
-	visitedEdges[vertex] = True
-	for i in NOG_adjacency_list[vertex]:
-		if not visitedEdges[i] and i not in queue:
-			queue.append(i)
-	while queue:
-		bfs2(queue.pop(0))
-
-
-def bfs3(vertex):
-	visitedEdges[vertex] = True
-	for i in GOVNOKOD[vertex]:
-		if not visitedEdges[i] and i not in queue:
-			queue.append(i)
-	while queue:
-		bfs3(queue.pop(0))
-
-
-def bfs(vertex):
-	visitedEdges[vertex] = True
-	for i in adjacency_list[vertex]:
-		if not visitedEdges[i] and i not in queue:
-			queue.append(i)
-	while queue:
-		bfs(queue.pop(0))
-
-
-size = int(input())
 n = int(input())
-adjacency_list, GOVNOKOD = makeGraph(size, n)
-pairs = []
-for vertex in range(len(adjacency_list)):
-    visitedEdges = [False] * size
-    queue = []
-    bfs(vertex)
-    midVisitedEdges = visitedEdges
-    for vert in range(len(midVisitedEdges)):
-        visitedEdges = [False] * size
-        queue = []
-        if midVisitedEdges[vert]:
-            dfs(vert)
-        if visitedEdges[vertex] and vertex!=vert:
-            pairs.append((vertex, vert))
+m = int(input())
+adj = [[] for i in range(n)]
+adjT = [[] for i in range(n)]
+graph = [[] for i in range(n)]
+used = [False for i in range(n)]
+color = [int(0) for i in range(n)]
+topSort = []
+component = [int(0) for i in range(n)]
 
-span_count1 = 0
-visitedEdges = [False] * size
-queue = []
-while False in visitedEdges:
-    span_count1 += 1
-    bfs3(visitedEdges.index(False))
+def read_graph_as_lists(N,M):
+    graph = [[] for i in range(N)]
+    for edge in range(M):
+        a,b = [int(x) for x in input().split()]
+        graph[a].append(b)
+        graph[b].append(a)
+    return graph
 
-NOG_adjacency_list = makeGraph2(size, n, pairs)
-span_count2 = 0
-visitedEdges = [False] * size
-queue = []
-while False in visitedEdges:
-    span_count2 += 1
-    bfs2(visitedEdges.index(False))
+for i in range(m):
+    v, w = map(int, input().split())
+    v -= 1
+    w -= 1
+    graph[v+1].append(w+1)
+    graph[w+1].append(v+1)
+    adj[v].append(w)
+    adjT[w].append(v)
 
-print(span_count1, span_count2)
+def dfs_1(vertex, graph, used = set()):
+    used.add(vertex)
+    for neighbour in graph[vertex]:
+        if neighbour not in used:
+            dfs_1(neighbour, graph, used)
+
+def dfs(v):
+    if used[v]:
+        return
+    used[v] = True
+    for w in adj[v]:
+        dfs(w)
+    topSort.append(v)
+
+def ccs(v, componentID):
+    if used[v]:
+        return
+    used[v] = True
+    component[v] = componentID
+    for w in adjT[v]:
+        ccs(w, componentID)
+
+def run():
+    for v in range(n):
+        dfs(v)
+    for i in range(n):
+        used[i] = False
+    componentID = 0
+    for v in reversed(topSort):
+        if not used[v]:
+            ccs(v, componentID)
+            componentID = componentID + 1
+
+    isp = set()
+    number_of_components = 0
+    for vertex in range(len(graph)):
+        if vertex not in isp:
+            dfs_1(vertex, graph, isp)
+            number_of_components += 1
+    print(number_of_components, componentID)
+
+run()

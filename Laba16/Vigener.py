@@ -43,6 +43,9 @@ keyword = input('keyword=')
 cipher = Vigenere(keyword)
 
 line = input()
+# line = list(line)
+# while ' ' in line:
+#     line.pop(line.index(' '))
 while line != '.':
     print(cipher.decode(line))
     line = input()
